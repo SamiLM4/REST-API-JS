@@ -5,7 +5,7 @@ class Banco {
         this.host = "127.0.0.1";
         this.usuario = "root";
         this.senha = "";
-        this.banco = "projetoweb";
+        this.banco = "restapi_js";
         this.porta = "3306";
         this.con = null;
     }

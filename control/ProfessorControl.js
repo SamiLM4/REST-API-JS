@@ -13,11 +13,10 @@ module.exports = class ProfessorControl {
         professor.email = request.body.professor.email;
         professor.senha = request.body.professor.senha;
         
-        
-
-        
         const resultado = await professor.login();
         
+        console.log(resultado);
+
         // Verifica o login antes de gerar o token
         if (resultado==true & request.body.professor.papel=="professor") {
             const objectClaimsToken = new Object();
@@ -48,16 +47,6 @@ module.exports = class ProfessorControl {
 
     // Método assíncrono para criar um novo aluno.
     async professor_create_control(request, response) {
-        const authorization = request.headers['authorization'];
-        
-        // Valida o token antes de continuar
-        if (meutoken.validarToken(authorization) == false) {
-            return response.status(401).send({
-                cod: 1,
-                status: false,
-                msg: 'Token inválido'
-            });
-        }
 
         var professor = new Professor();
         professor.nome = request.body.professor.nome;
@@ -90,13 +79,12 @@ module.exports = class ProfessorControl {
         var professor = new Professor();
         professor.id_prof = request.params.id_prof;
         const isDeleted = await professor.delete();
-        const payloadRecuperado=meutoken.getPayload();
-       const novoToken=meutoken.gerarToken(payloadRecuperado);
+
         const objResposta = {
             cod: 1,
             status: isDeleted,
             msg: isDeleted ? 'Professor excluído com sucesso' : 'Erro ao excluir o Professor',
-            novotoken: novoToken
+
         };
         response.status(200).send(objResposta);
     }
@@ -122,13 +110,12 @@ module.exports = class ProfessorControl {
         professor.senha = request.body.professor.senha;
 
         const isUpdated = await professor.update();
-        const payloadRecuperado=meutoken.getPayload();
-        const  novoToken=meutoken.gerarToken(payloadRecuperado);
+
         const objResposta = {
             cod: 1,
             status: true,
             msg: isUpdated ? 'Professor atualizado com sucesso' : 'Erro ao atualizar o Professor',
-            novotoken: novoToken
+
         };
         response.status(200).send(objResposta);
     }
@@ -148,14 +135,11 @@ module.exports = class ProfessorControl {
 
         var professor = new Professor();
         const resultado = await professor.readAll();
-        const payloadRecuperado=meutoken.getPayload();
-        const  novoToken=meutoken.gerarToken(payloadRecuperado);
         const objResposta = {
             cod: 1,
             status: true,
             msg: 'Executado com sucesso',
             professores: resultado,
-            novotoken: novoToken
         };
         response.status(200).send(objResposta);
     }
@@ -176,8 +160,6 @@ module.exports = class ProfessorControl {
         var professor = new Professor();
         professor.id_prof = request.params.id_prof;
         const resultado = await professor.readByID();
-        const payloadRecuperado=meutoken.getPayload();
-        const novoToken=meutoken.gerarToken(payloadRecuperado);
         const professorEncontrado =  resultado.length > 0;
 
         // Define a resposta com base no resultado encontrado
@@ -185,8 +167,7 @@ module.exports = class ProfessorControl {
             cod: professorEncontrado ? 1 : 0,  // Usa código 0 se não encontrar o professor
             status: professorEncontrado,       // Define status como true ou false baseado no resultado
             msg: professorEncontrado ? 'Professor encontrado' : 'Professor não encontrado',
-            professor: professorEncontrado ? resultado : null,
-            novoToken:professorEncontrado ? novoToken : "sem token"  // Retorna null para o professor se não encontrado
+            professor: professorEncontrado ? resultado : null
         };
     
         // Define o código de resposta como 200 se encontrado, 404 se não encontrado

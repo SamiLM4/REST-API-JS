@@ -22,31 +22,6 @@ next(); // Chama o próximo middleware ou rota
 }
 }
 
-
-
-// Middleware validar_EmailProfessor
-async validar_EmailProfessorCurso(request, response, next) {
-   
-
-    const email = request.body.curso.email;
-    const objCurso = new Curso();
-    objCurso.email = email; 
-
-    const emailExiste = await objCurso.isEmail();
-
-    if (emailExiste === false) {
-        const objResposta = {
-            status: false,
-            msg: "Não é possível cadastrar um curso com um email do professor nao existente"
-        };
-        // Interrompe o fluxo, pois o email já existe
-        return response.status(200).send(objResposta);
-    }
-    
-    // Continua para o próximo middleware ou controlador se o email for único
-    next();
-}
-
 async existe_Id_professor(request, response, next) {
     // Recupera o nome do cargo enviado no corpo da requisição (request body).
     const id_professor = request.body.curso.id_professor;

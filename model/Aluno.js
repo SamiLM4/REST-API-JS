@@ -18,7 +18,7 @@ async create() {
     const banco = new Banco(); // Cria uma nova instância da classe Banco
     const conexao = banco.getConexao(); // Obtém a conexão com o banco de dados
 
-    const SQL = 'INSERT INTO aluno (nome, email, idcurso, senha) VALUES (?, ?, ?, ?);'; // Query SQL para inserir o aluno
+    const SQL = 'INSERT INTO aluno (nome, email, idcurso, senha) VALUES (?, ?, ?, md5(?));'; // Query SQL para inserir o aluno
 
     try {
         // Passa os valores como um array no segundo argumento.
@@ -54,7 +54,7 @@ async create() {
         banco.conectar(); // Estabelece a conexão com o banco de dados
         const conexao = banco.getConexao(); // Obtém a conexão com o banco de dados
 
-        const SQL = 'UPDATE aluno SET nome = ?, email= ?, idcurso=?, senha=?  WHERE id = ?;'; // Query SQL para atualizar o nome de um cargo.
+        const SQL = 'UPDATE aluno SET nome = ?, email= ?, idcurso=?, senha=md5(?)  WHERE id = ?;'; // Query SQL para atualizar o nome de um cargo.
         try {
             const [result] = await conexao.promise().execute(SQL, [this._nome,this._email,this._idcurso,this._senha, this._id]); // Executa a query de atualização.
             return result.affectedRows > 0; // Retorna true se a atualização afetou alguma linha.
@@ -119,7 +119,7 @@ async create() {
         banco.conectar(); // Estabelece a conexão com o banco de dados
         const conexao = banco.getConexao(); // Obtém a conexão com o banco de dados
 
-        const SQL = 'SELECT COUNT(*) AS qtd FROM aluno WHERE email = ? AND senha = ?;'; // Query SQL para contar cargos com o mesmo nome.
+        const SQL = 'SELECT COUNT(*) AS qtd FROM aluno WHERE email = ? AND senha = md5(?);'; // Query SQL para contar cargos com o mesmo nome.
         try {
             const [rows] = await conexao.promise().execute(SQL, [this._email,this._senha]); // Executa a query.
             return rows[0].qtd > 0; // Retorna true se houver algum cargo com o mesmo nome.

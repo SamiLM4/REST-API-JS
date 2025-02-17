@@ -35,15 +35,9 @@ module.exports = class CursoRouter {
             
             // Middleware para validar o email do professor.
             this._cursoMiddleware.validar_NomeCurso,
-            this._cursoMiddleware.validar_EmailProfessorCurso,
             this._cursoMiddleware.existe_Id_professor,
             // Método para criar um novo professor.
             this._cursoControl.curso_create_control
-        );
-
-        // Define uma rota HTTP POST para login do professor.
-        this._router.post('/login',
-            this._cursoControl.curso_login_control
         );
 
         // Define uma rota HTTP DELETE para remover um professor pelo ID.
@@ -54,7 +48,6 @@ module.exports = class CursoRouter {
         // Define uma rota HTTP PUT para atualizar um professor pelo ID.
         this._router.put('/:id_curso',
             this._cursoMiddleware.validar_NomeCurso,
-            this._cursoMiddleware.validar_EmailProfessorCurso,
             this._cursoMiddleware.existe_Id_professor,
             this._cursoControl.curso_update_control
         );

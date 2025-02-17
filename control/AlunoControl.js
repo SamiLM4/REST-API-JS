@@ -43,17 +43,6 @@ module.exports = class AlunoControl {
 
     // Método assíncrono para criar um novo aluno.
     async aluno_create_control(request, response) {
-        const authorization = request.headers['authorization'];
-        
-        // Valida o token antes de continuar
-        if (meutoken.validarToken(authorization) == false) {
-            return response.status(401).send({
-                cod: 1,
-                status: false,
-                msg: 'Token inválido'
-            });
-        }
-
         var aluno = new Aluno();
         aluno.nome = request.body.aluno.nome;
         aluno.email = request.body.aluno.email;
@@ -85,13 +74,11 @@ module.exports = class AlunoControl {
         var aluno = new Aluno();
         aluno.id = request.params.id;
         const isDeleted = await aluno.delete();
-       const payloadRecuperado=meutoken.getPayload();
-       const novoToken=meutoken.gerarToken(payloadRecuperado);
+
         const objResposta = {
             cod: 1,
             status: isDeleted,
-            msg: isDeleted ? 'Aluno excluído com sucesso' : 'Erro ao excluir o aluno',
-            novotoken: novoToken
+            msg: isDeleted ? 'Aluno excluído com sucesso' : 'Erro ao excluir o aluno'
         };
         response.status(200).send(objResposta);
     }
@@ -117,13 +104,12 @@ module.exports = class AlunoControl {
         aluno.senha = request.body.aluno.senha;
 
         const isUpdated = await aluno.update();
-        const payloadRecuperado=meutoken.getPayload();
-       const  novoToken=meutoken.gerarToken(payloadRecuperado);
+
         const objResposta = {
             cod: 1,
             status: true,
-            msg: isUpdated ? 'Aluno atualizado com sucesso' : 'Erro ao atualizar o aluno',
-            novotoken: novoToken
+            msg: isUpdated ? 'Aluno atualizado com sucesso' : 'Erro ao atualizar o aluno'
+
         };
         response.status(200).send(objResposta);
     }
@@ -143,14 +129,13 @@ module.exports = class AlunoControl {
 
         var aluno = new Aluno();
         const resultado = await aluno.readAll();
-       const payloadRecuperado=meutoken.getPayload();
-       const novoToken=meutoken.gerarToken(payloadRecuperado);
+
         const objResposta = {
             cod: 1,
             status: true,
             msg: 'Executado com sucesso',
-            alunos: resultado,
-            novotoken: novoToken
+            alunos: resultado
+
         };
         response.status(200).send(objResposta);
     }
@@ -171,8 +156,7 @@ module.exports = class AlunoControl {
         var aluno = new Aluno();
         aluno.id = request.params.id;
         const resultado = await aluno.readByID();
-       const payloadRecuperado=meutoken.getPayload();
-       const novoToken=meutoken.gerarToken(payloadRecuperado);
+
        const alunoEncontrado =  resultado.length > 0;
 
        // Define a resposta com base no resultado encontrado
@@ -180,8 +164,7 @@ module.exports = class AlunoControl {
            cod:alunoEncontrado ? 1 : 0,  // Usa código 0 se não encontrar o professor
            status:alunoEncontrado,       // Define status como true ou false baseado no resultado
            msg: alunoEncontrado ? 'Aluno encontrado' : 'Aluno não encontrado',
-           aluno: alunoEncontrado ? resultado : null,
-           novoToken:alunoEncontrado ? novoToken : "sem token"  // Retorna null para o professor se não encontrado
+           aluno: alunoEncontrado ? resultado : null
        };
    
        // Define o código de resposta como 200 se encontrado, 404 se não encontrado
